@@ -31,8 +31,8 @@ var CHECKSFILE_DEFAULT = "checks.json";
 var assertFileExists = function(infile) {
     var instr = infile.toString();
     if(!fs.existsSync(instr)) {
-	console.log("%s does not exist. Exiting.", instr);
-	process.exit(1); // http://nodejs.org/api/process.html#process_process_exit_code
+	    console.log("%s does not exist. Exiting.", instr);
+	    process.exit(1); // http://nodejs.org/api/process.html#process_process_exit_code
     }
     return instr;
 };
@@ -50,8 +50,8 @@ var checkHtmlFile = function(htmlfile, checksfile) {
     var checks = loadChecks(checksfile).sort();
     var out = {};
     for(var ii in checks) {
-	var present = $(checks[ii]).length > 0;
-	out[checks[ii]] = present;
+	    var present = $(checks[ii]).length > 0;
+	    out[checks[ii]] = present;
     }
     return out;
 };
@@ -64,31 +64,31 @@ var clone = function(fn) {
 
 if(require.main == module) {
     program
-	.option('-f, --file <html_file>', 'Path to index.html', clone(assertFileExists), HTMLFILE_DEFAULT)
-	.option('-c, --checks <check_file>', 'Path to checks.json', clone(assertFileExists), CHECKSFILE_DEFAULT)
-	.option('-u, --url <url>', 'URL Path to index.html')
-	.parse(process.argv);
+        .option('-f, --file <html_file>', 'Path to index.html', clone(assertFileExists), HTMLFILE_DEFAULT)
+        .option('-c, --checks <check_file>', 'Path to checks.json', clone(assertFileExists), CHECKSFILE_DEFAULT)
+        .option('-u, --url <url>', 'URL Path to index.html')
+        .parse(process.argv);
 
     var checkJson;
     var inputFile = program.file;
     var outJson;
     if(program.url) {
-	rest.get(program.url).on('complete', function(result, response) {
-  	    if(result instanceof Error) {
-		console.error('Error: ' + util.format(response.message));
-	    }
-	    else {
-  		var downloadedUrlLocalPath = 'index2.html';
-  		fs.writeFileSync(downloadedUrlLocalPath, result);
-		checkJson = checkHtmlFile(downloadedUrlLocalPath,program.checks);
-		outJson = JSON.stringify(checkJson, null, 4);
-		console.log(outJson);
+	    rest.get(program.url).on('complete', function(result, response) {
+  	        if(result instanceof Error) {
+		        console.error('Error: ' + util.format(response.message));
+            }
+	        else {
+  		        var downloadedUrlLocalPath = 'index2.html';
+  		        fs.writeFileSync(downloadedUrlLocalPath, result);
+		        checkJson = checkHtmlFile(downloadedUrlLocalPath,program.checks);
+		        outJson = JSON.stringify(checkJson, null, 4);
+		        console.log(outJson);
      	    }
-	});
+	    });
     } else {
-	checkJson = checkHtmlFile(program.file, program.checks);
-	outJson = JSON.stringify(checkJson, null, 4);
-	console.log(outJson);
+	    checkJson = checkHtmlFile(program.file, program.checks);
+	    outJson = JSON.stringify(checkJson, null, 4);
+	    console.log(outJson);
     }
 } else {
     exports.checkHtmlFile = checkHtmlFile;
